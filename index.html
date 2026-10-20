@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brandloom · 品牌适配工作台</title>
+<style>
+:root{--paper:#f3f2ec;--ink:#20251f;--line:#dcded4;--accent:#dfff00;--muted:#777f70;--red:#a03b32;--green:#38643d}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.55 Arial,"Microsoft YaHei",sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:7px;background:#fff;padding:9px 12px;color:var(--ink)}button:hover{border-color:#818b74}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #7c9847;outline-offset:2px}
+header{background:#20251f;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 28px}header strong{font-size:23px;letter-spacing:-1px}header strong i{color:var(--accent);font-style:normal}header small{color:#aeb5a6;margin-left:20px}.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+header button{background:#30382d;color:#fff;border-color:#4c5745}.hero{padding:28px 30px 20px;display:flex;justify-content:space-between;gap:20px;align-items:end}.eyebrow{font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}h1{font-size:30px;letter-spacing:-1px;margin:5px 0}h2{font-size:16px;margin:0 0 15px}h3{font-size:13px;margin:15px 0 8px}p{margin:7px 0;color:var(--muted)}.pill{border:1px solid var(--line);border-radius:30px;padding:5px 12px;white-space:nowrap;font-size:12px}
+.layout{display:grid;grid-template-columns:260px minmax(300px,1fr) 300px;gap:18px;margin:0 28px 32px;align-items:start}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:16px}.num{display:inline-grid;place-items:center;background:#edf0e5;width:24px;height:24px;border-radius:6px;font:12px monospace;margin-right:8px}label{display:block;font-size:12px;font-weight:bold;margin:12px 0 5px}input:not([type=checkbox]):not([type=file]):not([type=color]),textarea,select{width:100%;border:1px solid var(--line);background:#fafbf7;border-radius:6px;padding:9px;color:var(--ink)}textarea{resize:vertical;min-height:62px}input[type=color]{width:44px;height:36px;padding:2px;border:1px solid var(--line);background:white;border-radius:6px}input[type=file]{width:100%;font-size:11px}.row{display:flex;align-items:center;gap:9px}.row>*{flex:1}.hint{font-size:11px;color:var(--muted);line-height:1.7}.primary{background:var(--ink);color:white;border-color:var(--ink)}.lime{background:var(--accent);border-color:#bdce32;font-weight:bold}.full{width:100%;margin-top:10px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.toolbar .spacer{flex:1}.metrics{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);background:white;border-radius:12px;margin-bottom:18px}.metric{padding:15px 20px;border-right:1px solid var(--line)}.metric:last-child{border:0}.metric b{font-size:26px;display:block;letter-spacing:-1px}.metric span{font-size:11px;color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:13px;margin-top:16px}.card{padding:8px;background:#fff;text-align:left;border:1px solid var(--line);border-radius:10px;min-width:0}.card.active{outline:2px solid var(--ink);outline-offset:1px}.thumb{height:230px;display:grid;place-items:center;background:#e8eae1;border-radius:6px;overflow:hidden}.thumb svg{max-width:100%;max-height:230px;display:block}.cardfoot{display:flex;justify-content:space-between;align-items:center;padding:9px 2px 2px;font-size:11px;gap:7px}.stage{min-height:230px;display:grid;place-items:center;background:#e8eae1;border-radius:8px;margin:14px 0;overflow:hidden}.stage svg{width:100%;max-height:530px}.status{font-size:11px}.fail{color:var(--red)}.pass{color:var(--green)}.review{color:#8b6c24}
+.check{padding:10px 0;border-bottom:1px solid #eceee7}.check b{font-size:12px;display:block}.check p{font-size:11px;margin:3px 0 0}.check .status{float:right}details{border-top:1px solid var(--line);padding-top:13px;margin-top:16px}summary{cursor:pointer;font-weight:bold;font-size:12px}.log{padding:9px 0;border-bottom:1px solid var(--line);font-size:11px;overflow-wrap:anywhere}.log strong{display:block}#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#20251f;color:white;padding:12px 22px;border-radius:8px;box-shadow:0 4px 25px #0002;z-index:10;max-width:90%;display:none}.hidden{display:none}
+@media(min-width:1500px){.layout{grid-template-columns:280px minmax(300px,1fr) 320px}.thumb{height:290px}.thumb svg{max-height:290px}}
+@media(max-width:1120px){.layout{grid-template-columns:240px minmax(300px,1fr)}.inspector{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:18px}.inspector>.panel{margin:0}}
+@media(max-width:700px){header{padding:16px;align-items:start;flex-direction:column}header small{margin-left:10px}.hero{padding:20px 16px;align-items:start;flex-direction:column}h1{font-size:25px}.layout{display:flex;flex-direction:column;margin:0 14px 20px}.layout>*,.inspector{width:100%}.inspector{display:block}.inspector>.panel{margin-bottom:16px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.thumb{height:190px}.thumb svg{max-height:190px}.metric{padding:12px}.metric b{font-size:23px}}
+
+</style>
+</head>
+<body>
+<header><div><strong>brandloom<i>✳</i></strong><small>Creative adaptation lab</small></div><div class="top-actions"><button id="htmlExport">下载离线 HTML</button><button id="projectExport">导出项目</button><button id="projectImport">导入项目</button><button id="help">使用说明</button><input id="importFile" class="hidden" type="file" accept=".json,application/json"></div></header>
+<section class="hero"><div><div class="eyebrow">Rules in. Consistency out.</div><h1>让品牌规则，进入每一次适配。</h1><p>从一份可复用规范，得到可检查、可修正的营销物料。</p></div><span class="pill" id="runState">本地运行 · 无需 API Key</span></section>
+<div class="layout">
+<aside>
+<section class="panel" id="brandPanel"><h2><span class="num">01</span>品牌规则</h2>
+<label for="brand">品牌 / 项目名称</label><input id="brand" maxlength="60">
+<label for="color">品牌强调色</label><div class="row"><input id="color" type="color"><code id="hex"></code></div>
+<label for="safe">安全边距（短边的 %）</label><input id="safe" type="number" min="3" max="12" step=".5">
+<div class="row"><div><label for="minFont">最小标题字号</label><input id="minFont" type="number" min="24" max="140"></div><div><label for="maxFont">最大标题字号</label><input id="maxFont" type="number" min="24" max="140"></div></div>
+<label for="maxLines">标题最多行数</label><input id="maxLines" type="number" min="1" max="6">
+<p class="hint">字号以 1080px 短边为基准。固定 Arial 字体；根据目标尺寸同比例换算。</p>
+<label for="logoFile">Logo 素材</label><input id="logoFile" type="file" accept="image/png,image/jpeg,image/webp"><p id="logoName" class="hint"></p>
+<label for="productFile">产品素材</label><input id="productFile" type="file" accept="image/png,image/jpeg,image/webp"><p id="productName" class="hint"></p>
+<p class="hint">支持 PNG / JPG / WebP，每张不超过 4MB；透明 PNG 更适合。未上传时使用虚构 APEX 演示图。</p>
+<button id="clearAssets" class="full">恢复演示素材</button><button id="rulesExport" class="full">导出 DESIGN.md</button>
+</section>
+<section class="panel"><h2>验证实际价值</h2><p class="hint">填入实际制作时间，包含规则准备、审核和返工；不使用生成耗时代替劳动时间。</p>
+<label for="baseline">纯人工总时间 / 分钟</label><input id="baseline" type="number" min="0" step=".1" placeholder="例如 45">
+<label for="assisted">辅助后总时间 / 分钟</label><input id="assisted" type="number" min="0" step=".1" placeholder="例如 30"><p id="benchmark" class="hint">尚未填写对照数据。</p></section>
+</aside>
+<main>
+<div class="metrics"><div class="metric"><b id="total">0</b><span>输出版本</span></div><div class="metric"><b id="failures">0</b><span>需要修复</span></div><div class="metric"><b id="pending">0</b><span>等待视觉复核</span></div></div>
+<section class="panel" id="copyPanel"><h2><span class="num">02</span>任务与文案</h2><div class="toolbar"><select id="language" aria-label="编辑语言"><option value="en">English · 英文</option><option value="de">Deutsch · 德文</option><option value="fr">Français · 法文</option></select><select id="format" aria-label="目标尺寸"><option value="feed">Feed · 1080 × 1350</option><option value="story">Story · 1080 × 1920</option><option value="wide">Banner · 1920 × 1080</option></select></div>
+<label for="headline">标题</label><textarea id="headline" maxlength="1800"></textarea>
+<label for="body">正文</label><textarea id="body" maxlength="1000"></textarea>
+<div class="row"><div><label for="cta">CTA</label><input id="cta" maxlength="180"></div><div><label for="price">价格 / 固定信息</label><input id="price" maxlength="100"></div></div>
+<div class="toolbar" style="margin-top:16px"><label style="font-weight:normal;margin:0"><input id="allSizes" type="checkbox"> 同时生成三种尺寸</label><span class="spacer"></span><button id="generate" class="lime">生成三语言版本 ↗</button></div><p class="hint">使用你已确认的译文，不自动翻译或改写。当前使用确定性排版，尚未连接 AI 模型。</p></section>
+<div class="toolbar"><h2 style="margin:0">适配结果</h2><span class="spacer"></span><label style="margin:0;font-weight:normal"><input id="guides" type="checkbox" checked> 显示安全区</label></div><div id="cards" class="cards"></div>
+<section class="panel" style="margin-top:18px"><div class="toolbar"><h2 id="selectionTitle" style="margin:0">当前版本</h2><span class="spacer"></span><button id="svgExport">导出 SVG</button><button id="pngExport">导出 PNG</button></div><div id="stage" class="stage"></div><p class="hint">SVG 保留文字与独立素材对象。PNG 是合成图。图中演示产品不代表真实商品。</p></section>
+</main>
+<aside class="inspector">
+<section class="panel"><h2><span class="num">03</span>检查与审核</h2><div id="checks"></div><button id="approve" class="primary full">确认当前版视觉审核通过</button><button id="reportExport" class="full">导出全批次检查报告</button>
+<details><summary>验证检查器</summary><p class="hint">故障只影响当前输出，重新生成即可恢复。</p><select id="fault" aria-label="注入故障"><option value="ratio">产品拉伸</option><option value="color">标题错色</option><option value="bounds">Logo 越界</option><option value="price">价格被修改</option></select><button id="inject" class="full">注入故障并检查</button><button id="selfTest" class="full">运行内置自测</button><div id="testResults" class="hint"></div></details>
+</section>
+<section class="panel"><h2>人工修正 → 复用</h2><p class="hint">调整当前标题。所有值均以 1080px 短边为基准。</p>
+<div class="row"><div><label for="dx">水平位移</label><input id="dx" type="number" min="-600" max="600" value="0"></div><div><label for="dy">垂直位移</label><input id="dy" type="number" min="-600" max="600" value="0"></div></div>
+<label for="fontOverride">标题字号（留空则自动）</label><input id="fontOverride" type="number" min="24" max="140">
+<label for="scope">这次修正适用于</label><select id="scope"><option value="once">当前语言与尺寸</option><option value="template">此尺寸模板的全部语言</option><option value="brand">品牌规则：标题字号上限</option></select>
+<label for="reason">修改原因</label><textarea id="reason" maxlength="300" placeholder="例如：德语标题需要更大的呼吸空间"></textarea><button id="apply" class="primary full">保存修正并重新生成</button><p class="hint">品牌级只更新字号上限，位移只保存到当前版。修正记录不会被自动提升成品牌规则。</p>
+<details open><summary>最近修改记录</summary><div id="logs"></div></details></section>
+</aside>
+</div><div id="toast" role="status" aria-live="polite"></div>
+<script>
+function createEngine(measure){
+  const formats={feed:{name:"Feed · 4:5",w:1080,h:1350},story:{name:"Story · 9:16",w:1080,h:1920},wide:{name:"Banner · 16:9",w:1920,h:1080}};
+  const normal=s=>String(s).replace(/\s/g,"");
+  function wrap(text,size,width){
+    const lines=[];
+    for(const paragraph of String(text).split("\n")){
+      let line="";
+      for(const word of paragraph.split(/\s+/).filter(Boolean)){
+        if(measure(word,size)>width){
+          if(line){lines.push(line);line="";}
+          for(const char of Array.from(word)){
+            if(line&&measure(line+char,size)>width){lines.push(line);line="";}
+            line+=char;
+          }
+        } else if(line&&measure(line+" "+word,size)>width){lines.push(line);line=word;}
+        else line+=(line?" ":"")+word;
+      }
+      if(line||!paragraph)lines.push(line);
+    }
+    return lines.length?lines:[""];
+  }
+  function textNode(id,text,x,y,size,width,color,maxLines){
+    const lines=wrap(text,size,width);
+    return {id,kind:"text",text,lines,x,y,size,w:Math.max(...lines.map(t=>measure(t,size))),h:lines.length*size*1.15,color,maxLines};
+  }
+  function build(kit,copy,locale,format,assets,override={}){
+    const f=formats[format],{w,h}=f,s=Math.min(w,h)/1080,m=Math.min(w,h)*kit.safe,wide=format==="wide",nodes=[];
+    const logo=assets.logo;
+    const logoH=logo?Math.min(42*s,w*.28/logo.ratio):42*s,logoW=logo?logoH*logo.ratio:130*s;
+    nodes.push({id:"logo",kind:logo?"image":"logo",x:m,y:m,w:logoW,h:logoH,ratio:logo?logo.ratio:130/42,src:logo?.src});
+    let font=(override.font??kit.maxFont)*s;
+    const titleW=(wide?w*.44:w-2*m)*(override.width??1);
+    if(override.font===undefined)while(font>kit.minFont*s&&wrap(copy.headline,font,titleW).length>kit.maxLines)font=Math.max(kit.minFont*s,font-2*s);
+    const title=textNode("headline",copy.headline,m+(override.dx??0)*s,m+110*s+(override.dy??0)*s,font,titleW,kit.color,kit.maxLines);
+    nodes.push(title);
+    const ratio=assets.product?.ratio??.75,bw=wide?w*.36:w*.57,bh=wide?h*.68:h*.39;
+    const pw=Math.min(bw,bh*ratio),ph=pw/ratio;
+    nodes.push({id:"product",kind:"image",src:assets.product?.src,x:wide?w*.59:(w-pw)/2+w*.12,y:wide?h*.14:h*.39,w:pw,h:ph,ratio});
+    const body=textNode("body",copy.body,m,wide?h*.65:h*.82,26*s,wide?w*.44:w-2*m,"#D4D4D4",3);
+    nodes.push(body);
+    let ctaSize=24*s,available=w-2*m-240*s;
+    while(ctaSize>18*s&&measure(copy.cta,ctaSize)+48*s>available)ctaSize-=s;
+    const cta=textNode("cta",copy.cta,m+24*s,h-m-67*s+18*s,ctaSize,Math.max(20,available-48*s),"#111111",1);
+    const button={x:m,y:h-m-67*s,w:Math.min(available,measure(copy.cta,ctaSize)+48*s),h:67*s};
+    nodes.push(cta);
+    nodes.push(textNode("price",copy.price,w-m-measure(copy.price,32*s),button.y+13*s,32*s,w*.25,"#FFFFFF",1));
+    return {id:locale+"_"+format,locale,format,w,h,s,margin:m,kitColor:kit.color,nodes,button,expected:{...copy},override:{...override}};
+  }
+  function check(doc,kit){
+    const result=[],find=id=>doc.nodes.find(n=>n.id===id);
+    const add=(id,ok,label,detail)=>result.push({id,status:ok?"pass":"fail",label,detail});
+    const f=formats[doc.format],t=find("headline"),p=find("product"),l=find("logo");
+    add("canvas.size",doc.w===f.w&&doc.h===f.h,"画布尺寸",doc.w+" × "+doc.h);
+    add("copy.exact",["headline","body","cta"].every(id=>normal(find(id).lines.join(""))===normal(doc.expected[id]))&&find("price").text===doc.expected.price&&find("price").lines.join("")===doc.expected.price,"文案与价格","对照任务输入；排版换行与空白差异忽略，价格逐字比较");
+    add("product.ratio",Math.abs(p.w/p.h/p.ratio-1)<.001,"产品保持比例","与上传素材或演示图的原始宽高比比较");
+    add("logo.ratio",Math.abs(l.w/l.h/l.ratio-1)<.001,"Logo 保持比例","与原始宽高比比较");
+    const outside=doc.nodes.filter(n=>n.x<doc.margin-.5||n.y<doc.margin-.5||n.x+n.w>doc.w-doc.margin+.5||n.y+n.h>doc.h-doc.margin+.5);
+    add("layout.safe",outside.length===0,"元素安全区",outside.length?outside.map(n=>n.id).join("、")+" 超出安全区":"按对象与文本测量边界检查");
+    add("type.limits",t.lines.length<=kit.maxLines&&t.size>=kit.minFont*doc.s-.1&&t.size<=kit.maxFont*doc.s+.1,"标题行数与字号",t.lines.length+" 行 · "+Math.round(t.size/doc.s)+"px（1080 基准）");
+    add("brand.color",t.color.toUpperCase()===kit.color.toUpperCase()&&doc.kitColor.toUpperCase()===kit.color.toUpperCase(),"指定元素品牌色","只检查标题和 CTA 背景属性");
+    const c=find("cta");
+    add("copy.fit",c.lines.length===1&&c.x+c.w<=doc.button.x+doc.button.w-15*doc.s&&c.y+c.h<=doc.button.y+doc.button.h&&find("body").lines.length<=3,"正文与 CTA 容量","CTA 单行且位于按钮内；正文不超过 3 行");
+    const overlap=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+    const pairs=[["headline","product"],["body","product"],["body","cta"],["headline","body"],["logo","headline"]];
+    const hits=pairs.filter(([a,b])=>overlap(find(a),find(b))).map(x=>x.join(" / "));
+    result.push({id:"visual.review",status:"review",label:"视觉与遮挡审核",detail:hits.length?"边界疑似重叠："+hits.join("、")+"；请结合透明区域人工判断":"请确认构图、产品可见性、字体显示和最终文案阅读体验"});
+    return result;
+  }
+  return {formats,wrap,build,check};
+}
+
+if (typeof module !== "undefined" && module.exports) module.exports = { createEngine };
+
+
+const $=id=>document.getElementById(id),clone=o=>JSON.parse(JSON.stringify(o));
+const sample={en:{headline:"GO BEYOND\nTHE ORDINARY.",body:"Every journey deserves a different perspective.",cta:"Discover more",price:"€399"},de:{headline:"MEHR ALS\nNUR EIN ABENTEUER.",body:"Jede Reise verdient eine neue Perspektive.",cta:"Jetzt entdecken",price:"€399"},fr:{headline:"CHANGEZ\nDE PERSPECTIVE.",body:"Chaque aventure mérite un nouveau regard.",cta:"Découvrir",price:"399 €"}};
+function fresh(){return {version:1,kit:{name:"APEX Campaign",color:"#DFFF00",safe:.055,minFont:42,maxFont:92,maxLines:3,revision:1},copies:clone(sample),assets:{},local:{},templates:{},logs:[],allSizes:false,format:"feed",benchmark:{baseline:"",assisted:""}};}
+let state=fresh(),docs=[],lastKit=null,selected="",reviews={},dirty=false,toastTimer;
+function toast(text){$("toast").textContent=text;$("toast").style.display="block";clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").style.display="none",4500);}
+const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d");
+function measure(text,size){ctx.font="700 "+size+"px Arial, sans-serif";return ctx.measureText(text).width;}
+const E=createEngine(measure);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"}[c]));
+function bounded(v,min,max,label){const n=Number(v);if(!Number.isFinite(n)||n<min||n>max)throw Error(label+"应在 "+min+"–"+max+" 之间");return n;}
+function validate(raw){
+  if(!raw||raw.version!==1)throw Error("仅支持 Brandloom v1 项目 JSON");
+  const out=fresh(),k=raw.kit;if(!k||!/^#[0-9a-f]{6}$/i.test(k.color))throw Error("品牌色格式错误");
+  out.kit={name:String(k.name||"Untitled").slice(0,60),color:k.color,safe:bounded(k.safe,.03,.12,"边距"),minFont:bounded(k.minFont,24,140,"最小字号"),maxFont:bounded(k.maxFont,24,140,"最大字号"),maxLines:bounded(k.maxLines,1,6,"行数"),revision:Math.max(1,Math.floor(Number(k.revision)||1))};
+  if(!Number.isInteger(out.kit.maxLines)||out.kit.minFont>out.kit.maxFont)throw Error("请检查行数和字号范围");
+  for(const lang of ["en","de","fr"]){const c=raw.copies?.[lang];if(!c)throw Error("缺少 "+lang+" 文案");out.copies[lang]={};for(const key of ["headline","body","cta","price"]){if(typeof c[key]!=="string"||c[key].length>3000)throw Error("文案字段无效");out.copies[lang][key]=c[key];}if(!c.headline.trim()||!c.cta.trim())throw Error("标题和 CTA 不能为空");}
+  for(const id of ["logo","product"]){const a=raw.assets?.[id];if(a){if(typeof a.src!=="string"||a.src.length>6000000||!/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(a.src))throw Error("素材格式无效");out.assets[id]={src:a.src,ratio:bounded(a.ratio,.01,100,"素材比例"),name:String(a.name||id).slice(0,120)};}}
+  function cleanOverride(o){if(!o||typeof o!=="object")return {};const r={};for(const key of ["dx","dy"])if(o[key]!==undefined)r[key]=bounded(o[key],-600,600,"位移");if(o.font!==undefined)r.font=bounded(o.font,24,140,"标题字号");return r;}
+  for(const f of Object.keys(E.formats)){out.templates[f]=cleanOverride(raw.templates?.[f]);for(const l of ["en","de","fr"])out.local[l+"_"+f]=cleanOverride(raw.local?.[l+"_"+f]);}
+  out.format=E.formats[raw.format]?raw.format:"feed";out.allSizes=!!raw.allSizes;
+  out.logs=Array.isArray(raw.logs)?raw.logs.slice(-80).map(l=>({time:String(l.time||"").slice(0,40),action:String(l.action||"").slice(0,100),detail:String(l.detail||"").slice(0,600)})):[];
+  for(const key of ["baseline","assisted"]){const n=raw.benchmark?.[key];out.benchmark[key]=n!==""&&Number.isFinite(Number(n))&&Number(n)>=0&&Number(n)<100000?String(n):"";}
+  return out;
+}
+let persistenceFailed=false;
+function persist(){try{localStorage.setItem("brandloom-v1",JSON.stringify(state));persistenceFailed=false;}catch(e){if(!persistenceFailed){toast("浏览器无法保存项目，请使用「导出项目」备份。");persistenceFailed=true;}}}
+try{const embedded=$("saved-project");const saved=embedded?embedded.textContent:localStorage.getItem("brandloom-v1");if(saved)state=validate(JSON.parse(saved));}catch(e){toast("未读取旧存档，已加载演示项目。");}
+function log(action,detail){state.logs.push({time:new Date().toISOString(),action,detail:String(detail)});state.logs=state.logs.slice(-80);}
+function loadCopy(){const c=state.copies[$("language").value];for(const key of ["headline","body","cta","price"])$(key).value=c[key];}
+function syncInputs(){for(const key of ["minFont","maxFont","maxLines"])$(key).value=state.kit[key];$("brand").value=state.kit.name;$("color").value=state.kit.color;$("hex").textContent=state.kit.color.toUpperCase();$("safe").value=Number((state.kit.safe*100).toFixed(2));$("format").value=state.format;$("allSizes").checked=state.allSizes;for(const key of ["logo","product"])$(key+"Name").textContent=state.assets[key]?.name||"当前：APEX 演示素材";for(const key of ["baseline","assisted"])$(key).value=state.benchmark[key];loadCopy();updateBenchmark();}
+function collect(){
+  for(const key of ["headline","body","cta","price"])state.copies[$("language").value][key]=$(key).value;
+  const k={...state.kit,name:$("brand").value,color:$("color").value,safe:Number($("safe").value)/100,minFont:Number($("minFont").value),maxFont:Number($("maxFont").value),maxLines:Number($("maxLines").value)};
+  if(["name","color","safe","minFont","maxFont","maxLines"].some(key=>k[key]!==state.kit[key]))k.revision=state.kit.revision+1;
+  state=validate({...state,kit:k,allSizes:$("allSizes").checked,format:$("format").value});$("hex").textContent=state.kit.color.toUpperCase();
+}
+function markDirty(){dirty=true;$("runState").textContent="输入已修改 · 请重新生成";}
+function current(){return docs.find(d=>d.id===selected)||docs[0];}
+function checks(d){return E.check(d,lastKit).map(r=>r.status==="review"&&reviews[d.id]?{...r,status:"pass",detail:"设计师已手动确认本次输出；重新生成后需要再次确认。"}:r);}
+function summary(d){const rs=checks(d);return rs.some(r=>r.status==="fail")?{class:"fail",text:"需要修复"}:rs.some(r=>r.status==="review")?{class:"review",text:"待视觉复核"}:{class:"pass",text:"审核通过"};}
+function svg(d,guides=false){
+  const color=esc(d.kitColor),id=d.id.replace(/[^a-z0-9_]/gi,""),s=d.s;
+  const content=d.nodes.map(n=>{
+    if(n.kind==="text")return '<text font-family="Arial, sans-serif" font-weight="700" font-size="'+n.size+'" fill="'+esc(n.color)+'">'+n.lines.map((line,i)=>'<tspan x="'+n.x+'" y="'+(n.y+n.size*.86+i*n.size*1.15)+'">'+esc(line)+'</tspan>').join("")+'</text>';
+    if(n.src)return '<image href="'+esc(n.src)+'" x="'+n.x+'" y="'+n.y+'" width="'+n.w+'" height="'+n.h+'" preserveAspectRatio="none"/>';
+    if(n.kind==="logo")return '<svg x="'+n.x+'" y="'+n.y+'" width="'+n.w+'" height="'+n.h+'" viewBox="0 0 130 42"><text x="0" y="33" fill="white" font-family="Arial, sans-serif" font-weight="900" font-size="35" letter-spacing="2">APEX</text><circle cx="119" cy="8" r="4" fill="'+color+'"/></svg>';
+    return '<svg x="'+n.x+'" y="'+n.y+'" width="'+n.w+'" height="'+n.h+'" viewBox="0 0 240 320" preserveAspectRatio="none"><rect x="31" y="6" width="178" height="306" rx="33" fill="#111513" stroke="#777e76" stroke-width="3"/><rect x="43" y="18" width="154" height="278" rx="24" fill="url(#metal_'+id+')"/><rect x="53" y="32" width="134" height="155" rx="22" fill="#171d19" stroke="#5e685e" stroke-width="2"/><circle cx="120" cy="109" r="56" fill="#060a09" stroke="#697a6a" stroke-width="5"/><circle cx="120" cy="109" r="41" fill="#152c29" stroke="#2f4140" stroke-width="5"/><circle cx="120" cy="109" r="26" fill="#0a1012"/><ellipse cx="107" cy="94" rx="10" ry="7" fill="#7895a0" opacity=".55"/><circle cx="120" cy="229" r="18" fill="'+color+'"/><text x="120" y="272" text-anchor="middle" font-family="Arial" font-size="12" letter-spacing="4" fill="#aeb8ab">APEX</text><path d="M64 298h112" stroke="#080d0b" stroke-width="6"/></svg>';
+  }).join("");
+  const debug=guides?'<rect x="'+d.margin+'" y="'+d.margin+'" width="'+(d.w-2*d.margin)+'" height="'+(d.h-2*d.margin)+'" fill="none" stroke="white" stroke-opacity=".65" stroke-width="'+2*s+'" stroke-dasharray="'+10*s+' '+8*s+'"/>':"";
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="'+d.w+'" height="'+d.h+'" viewBox="0 0 '+d.w+' '+d.h+'" role="img" aria-label="'+esc(lastKit.name+" "+d.locale+" "+d.format)+'"><title>'+esc(lastKit.name+" · "+d.locale+" · "+d.format)+'</title><defs><linearGradient id="metal_'+id+'" x2="1" y2=".5"><stop stop-color="#657166"/><stop offset=".35" stop-color="#333d35"/><stop offset="1" stop-color="#151d18"/></linearGradient><pattern id="grid_'+id+'" width="'+80*s+'" height="'+80*s+'" patternUnits="userSpaceOnUse"><path d="M '+80*s+' 0 L 0 0 0 '+80*s+'" fill="none" stroke="#fff" stroke-opacity=".035" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="#151b17"/><path d="M '+d.w*.8+' 0 H '+d.w+' V '+d.h*.82+' L '+d.w*.32+' '+d.h+' Z" fill="'+color+'" opacity=".08"/><rect width="100%" height="100%" fill="url(#grid_'+id+')"/><circle cx="'+d.w*.8+'" cy="'+d.h*.55+'" r="'+Math.min(d.w,d.h)*.33+'" fill="none" stroke="'+color+'" stroke-opacity=".15" stroke-width="'+2*s+'"/><rect x="'+d.button.x+'" y="'+d.button.y+'" width="'+d.button.w+'" height="'+d.button.h+'" rx="'+5*s+'" fill="'+color+'"/>'+content+debug+'</svg>';
+}
+function renderLogs(){$("logs").replaceChildren();if(!state.logs.length){$("logs").textContent="尚无修改记录。";return;}for(const l of state.logs.slice(-8).reverse()){const item=document.createElement("div");item.className="log";const title=document.createElement("strong");title.textContent=l.action;const detail=document.createElement("div");detail.textContent=l.detail;const time=document.createElement("div");time.className="hint";time.textContent=new Date(l.time).toLocaleString();item.append(title,detail,time);$("logs").append(item);}}
+function render(){
+  const d=current();if(!d)return;selected=d.id;
+  $("total").textContent=docs.length;$("failures").textContent=docs.filter(d=>summary(d).class==="fail").length;$("pending").textContent=docs.filter(d=>checks(d).some(r=>r.status==="review")).length;
+  $("cards").innerHTML=docs.map(x=>{const st=summary(x);return '<button class="card '+(x.id===selected?"active":"")+'" data-id="'+x.id+'" aria-label="'+x.locale+" "+E.formats[x.format].name+'"><div class="thumb">'+svg(x,false)+'</div><div class="cardfoot"><b>'+x.locale.toUpperCase()+" · "+(x.format==="feed"?"4:5":x.format==="story"?"9:16":"16:9")+'</b><span class="status '+st.class+'">'+st.text+'</span></div></button>';}).join("");
+  $("stage").innerHTML=svg(d,$("guides").checked);$("selectionTitle").textContent=d.locale.toUpperCase()+" / "+E.formats[d.format].name;
+  $("checks").replaceChildren();for(const r of checks(d)){const line=document.createElement("div");line.className="check";const status=document.createElement("span");status.className="status "+r.status;status.textContent={pass:"通过",fail:"不通过",review:"待审核"}[r.status];const title=document.createElement("b");title.textContent=r.label;const desc=document.createElement("p");desc.textContent=r.detail;line.append(status,title,desc);$("checks").append(line);}
+  const ov=d.override||{};$("dx").value=ov.dx??0;$("dy").value=ov.dy??0;$("fontOverride").value=ov.font??"";
+  $("approve").textContent=reviews[d.id]?"撤销当前版视觉确认":"确认当前版视觉审核通过";renderLogs();
+}
+function generate(record=true){
+  collect();lastKit=clone(state.kit);const fs=state.allSizes?Object.keys(E.formats):[state.format];docs=[];
+  for(const locale of ["en","de","fr"])for(const f of fs)docs.push(E.build(lastKit,state.copies[locale],locale,f,state.assets,{...state.templates[f],...state.local[locale+"_"+f]}));
+  reviews={};dirty=false;$("runState").textContent="已生成 · 品牌规则 v"+state.kit.revision;if(record)log("生成版本",docs.length+" 个输出；审核确认已重置。");render();persist();
+}
+function guard(){if(dirty){toast("输入已修改，请先重新生成，再检查或导出输出。");return false;}return !!current();}
+function download(name,data,type){const blob=new Blob([data],{type}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
+function report(){return {tool:"Brandloom",version:1,createdAt:new Date().toISOString(),mode:"deterministic-layout",font:"Arial 700",brand:clone(lastKit),assets:Object.fromEntries(Object.entries(state.assets).map(([k,v])=>[k,{name:v.name,ratio:v.ratio}])),benchmark:state.benchmark,outputs:docs.map(d=>({id:d.id,width:d.w,height:d.h,expected:d.expected,override:d.override,status:summary(d).text,checks:checks(d)})),logs:state.logs,limitations:["文本按字体宽度和行框检查，实际显示需人工复核。","只检查标题和 CTA 背景的品牌色属性，不检查位图颜色。","边界重叠只提供人工审核线索，不代表真实像素遮挡。","视觉审核是设计师的明确确认，不是系统的自动判断。"]};}
+function updateBenchmark(){const a=Number($("baseline").value),b=Number($("assisted").value);state.benchmark={baseline:$("baseline").value,assisted:$("assisted").value};$("benchmark").textContent=a>0&&$("assisted").value!==""&&b>=0?"实际记录：人工 "+a+" 分钟，辅助后 "+b+" 分钟；"+(b<=a?"减少 "+((a-b)/a*100).toFixed(1)+"%。":"增加 "+((b-a)/a*100).toFixed(1)+"%。"):"尚未填写完整对照数据。";}
+function handle(fn){return async event=>{try{await fn(event);}catch(e){toast(e.message||"操作失败");}};}
+$("generate").onclick=handle(()=>generate());
+$("language").onchange=()=>loadCopy();
+for(const id of ["headline","body","cta","price"])$(id).addEventListener("input",()=>{state.copies[$("language").value][id]=$(id).value;markDirty();});
+for(const id of ["brand","color","safe","minFont","maxFont","maxLines","format","allSizes"])$(id).addEventListener("input",()=>{if(id==="color")$("hex").textContent=$("color").value.toUpperCase();markDirty();});
+for(const id of ["baseline","assisted"])$(id).addEventListener("input",()=>{updateBenchmark();persist();});
+$("cards").onclick=e=>{const b=e.target.closest("button[data-id]");if(b){selected=b.dataset.id;render();}};
+$("guides").onchange=()=>render();
+for(const id of ["logo","product"])$(id+"File").onchange=handle(async()=>{
+  const file=$(id+"File").files[0];if(!file)return;if(file.size>4*1024*1024||!["image/png","image/jpeg","image/webp"].includes(file.type))throw Error("请使用 4MB 内的 PNG、JPG 或 WebP。");
+  const src=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(Error("读取图片失败"));r.readAsDataURL(file);});
+  const image=await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(Error("图片无法解码"));im.src=src;});
+  const ratio=image.naturalWidth/image.naturalHeight;if(ratio<.01||ratio>100)throw Error("图片宽高比超出支持范围");
+  state.assets[id]={src,ratio,name:file.name};$(id+"Name").textContent=file.name;markDirty();toast("已读取素材，重新生成后生效。");
+});
+$("clearAssets").onclick=()=>{state.assets={};for(const id of ["logo","product"]){$(id+"Name").textContent="当前：APEX 演示素材";$(id+"File").value="";}markDirty();};
+$("approve").onclick=handle(()=>{if(!guard())return;const d=current();if(checks(d).some(r=>r.status==="fail"))throw Error("当前版还有硬性检查失败，请先修复。");reviews[d.id]=!reviews[d.id];log(reviews[d.id]?"人工视觉确认":"撤销视觉确认",d.id);render();persist();});
+$("apply").onclick=handle(()=>{
+  if(!guard())return;const d=current(),scope=$("scope").value,reason=$("reason").value.trim();if(!reason)throw Error("请填写修改原因。");
+  const ov={dx:bounded($("dx").value,-600,600,"水平位移"),dy:bounded($("dy").value,-600,600,"垂直位移")};if($("fontOverride").value!=="")ov.font=bounded($("fontOverride").value,24,140,"标题字号");
+  if(scope==="brand"&&(ov.font===undefined||ov.font<state.kit.minFont))throw Error("品牌级需填写不小于最小字号的标题字号上限。");
+  const before=clone(d.override);
+  if(scope==="template"){state.templates[d.format]=ov;delete state.local[d.id];}
+  else {state.local[d.id]=ov;if(scope==="brand"){state.kit.maxFont=ov.font;state.kit.revision++;$("maxFont").value=ov.font;}}
+  log("保存修正 · "+{once:"当前版本",template:"尺寸模板",brand:"品牌字号上限"}[scope],d.id+" | "+reason+" | "+JSON.stringify(before)+" → "+JSON.stringify(ov));
+  generate(false);toast("修正已复用到新输出；请重新审核。");
+});
+$("inject").onclick=handle(()=>{
+  if(!guard())return;const d=current(),kind=$("fault").value;const n=id=>d.nodes.find(x=>x.id===id);
+  if(kind==="ratio")n("product").w*=1.3;if(kind==="color")n("headline").color="#FF44AA";if(kind==="bounds")n("logo").x=-20;if(kind==="price"){n("price").text="CHANGED";n("price").lines=["CHANGED"];}
+  delete reviews[d.id];log("注入验证故障",d.id+" · "+kind);render();persist();
+});
+$("svgExport").onclick=handle(()=>{if(guard())download(current().id+".svg",svg(current(),false),"image/svg+xml;charset=utf-8");});
+$("pngExport").onclick=handle(async()=>{
+  if(!guard())return;const d=current(),source=svg(d,false),u=URL.createObjectURL(new Blob([source],{type:"image/svg+xml"}));
+  try{const image=await new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=()=>reject(Error("SVG 渲染失败，请先尝试导出 SVG。"));i.src=u;});const c=document.createElement("canvas");c.width=d.w;c.height=d.h;c.getContext("2d").drawImage(image,0,0);const blob=await new Promise(resolve=>c.toBlob(resolve,"image/png"));if(!blob)throw Error("PNG 导出失败");download(d.id+".png",blob,"image/png");}finally{URL.revokeObjectURL(u);}
+});
+$("reportExport").onclick=handle(()=>{if(guard())download("brandloom-report.json",JSON.stringify(report(),null,2),"application/json");});
+$("projectExport").onclick=handle(()=>{collect();download("brandloom-project.json",JSON.stringify(state,null,2),"application/json");persist();});
+$("projectImport").onclick=()=>$("importFile").click();
+$("importFile").onchange=handle(async()=>{
+  const f=$("importFile").files[0];if(!f)return;if(f.size>14000000)throw Error("项目文件不能超过 14MB");
+  const candidate=validate(JSON.parse(await f.text()));if(!confirm("导入将替换当前项目。请确认已导出需要保留的项目。"))return;
+  state=candidate;selected="";syncInputs();generate(false);toast("项目已导入。");$("importFile").value="";
+});
+$("rulesExport").onclick=handle(()=>{collect();const k=state.kit;download("DESIGN.md",["# "+k.name,"","规则版本："+k.revision,"","## 可执行规则","- 强调色："+k.color+"；用于标题和 CTA 背景。","- 安全边距：画布短边的 "+(k.safe*100).toFixed(1)+"%。","- 标题字号："+k.minFont+"–"+k.maxFont+"px（1080px 短边基准）。","- 标题最多 "+k.maxLines+" 行。","- 固定字体：Arial，700。","- Logo 与产品保持原始宽高比。","- 文案不改写；价格逐字保留。","- 先换行，再缩小字号；仍放不下时报告失败。","","## 人工判断","- 产品可见性、构图、品牌感、字体显示、阅读体验。","","## 规则适用范围","- 本原型自定义营销规则，不声明兼容第三方 DESIGN.md 标准。","- 仅本次修正与尺寸模板偏好分别保存在项目 JSON 的 local 与 templates 中。",""].join("\n"),"text/markdown;charset=utf-8");});
+$("htmlExport").onclick=handle(()=>{
+  collect();const doc=document.documentElement.cloneNode(true);doc.querySelector("#saved-project")?.remove();
+  const embedded=document.createElement("script");embedded.id="saved-project";embedded.type="application/json";embedded.textContent=JSON.stringify(state).replace(/</g,"\\u003c");doc.querySelector("head").append(embedded);
+  const toastNode=doc.querySelector("#toast");if(toastNode)toastNode.style.display="none";
+  download("brandloom.html","<!doctype html>\n"+doc.outerHTML,"text/html;charset=utf-8");persist();toast("已下载离线 HTML，其中包含当前项目与素材。");
+});
+$("selfTest").onclick=handle(()=>{
+  const k=fresh().kit,c=sample.en,b=E.build(k,c,"en","feed",{}),results=[];
+  const test=(name,fn)=>{try{results.push({name,pass:!!fn()});}catch(e){results.push({name,pass:false});}};
+  test("默认三种尺寸硬性检查",()=>Object.keys(E.formats).every(f=>E.check(E.build(k,c,"en",f,{}),k).every(r=>r.status!=="fail")));
+  for(const [name,rule,mutate] of [
+    ["识别产品拉伸","product.ratio",d=>d.nodes.find(n=>n.id==="product").w*=1.3],
+    ["识别指定元素错色","brand.color",d=>d.nodes.find(n=>n.id==="headline").color="#FF00FF"],
+    ["识别元素越界","layout.safe",d=>d.nodes.find(n=>n.id==="logo").x=-20],
+    ["识别价格篡改","copy.exact",d=>d.nodes.find(n=>n.id==="price").lines=["WRONG"]]
+  ])test(name,()=>{const d=clone(b);mutate(d);return E.check(d,k).find(r=>r.id===rule).status==="fail";});
+  test("超长标题保留原文且报错",()=>{const title=("A VERY LONG HEADLINE ").repeat(40),d=E.build(k,{...c,headline:title},"en","feed",{});return d.nodes.find(n=>n.id==="headline").text===title&&E.check(d,k).find(r=>r.id==="type.limits").status==="fail";});
+  test("再次生成保留修正参数",()=>{const d=E.build(k,c,"en","feed",{},{dx:31,font:68});return d.nodes.find(n=>n.id==="headline").x===b.nodes.find(n=>n.id==="headline").x+31&&d.nodes.find(n=>n.id==="headline").size===68;});
+  $("testResults").textContent=results.map(r=>(r.pass?"✓ ":"✕ ")+r.name).join(" / ");log("运行内置自测",results.filter(r=>r.pass).length+"/"+results.length+" 通过");renderLogs();persist();
+});
+$("help").onclick=()=>alert("Brandloom · 本地品牌适配实验\n\n1. 使用演示项目，或填写品牌规则、上传素材。\n2. 分别选择 EN / DE / FR 填写已确认的文案。\n3. 选择一个尺寸生成三个版本，或勾选全部尺寸生成九个版本。\n4. 点击输出查看检查结果；可调整标题位移、字号，选择修正范围并保存。\n5. 硬性检查通过后，逐版进行人工视觉审核。\n6. 导出 SVG、PNG、完整检查报告，或下载包含当前项目的离线 HTML。\n\n重要边界：\n当前没有 AI 模型、自动翻译、PDF / 官网规则提取或任意 SVG 模板导入。使用内置分层模板与固定 Arial 字体。Logo、产品素材不会被重新生成。位图内容、产品真实性、遮挡与品牌感需要人工确认。\n\n只在浏览器本地处理文件；本页没有联网请求。建议定期导出项目备份。下载的 HTML / JSON 包含你的素材，按原素材的权限使用和分享。");
+syncInputs();try{generate(false);}catch(e){toast("初始化失败："+e.message);}
+
+</script>
+</body>
+</html>

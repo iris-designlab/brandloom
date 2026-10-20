@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brandloom · 品牌适配工作台</title>
+<style>
+{{STYLES}}
+</style>
+</head>
+<body>
+<header><div><strong>brandloom<i>✳</i></strong><small>Creative adaptation lab</small></div><div class="top-actions"><button id="htmlExport">下载离线 HTML</button><button id="projectExport">导出项目</button><button id="projectImport">导入项目</button><button id="help">使用说明</button><input id="importFile" class="hidden" type="file" accept=".json,application/json"></div></header>
+<section class="hero"><div><div class="eyebrow">Rules in. Consistency out.</div><h1>让品牌规则，进入每一次适配。</h1><p>从一份可复用规范，得到可检查、可修正的营销物料。</p></div><span class="pill" id="runState">本地运行 · 无需 API Key</span></section>
+<div class="layout">
+<aside>
+<section class="panel" id="brandPanel"><h2><span class="num">01</span>品牌规则</h2>
+<label for="brand">品牌 / 项目名称</label><input id="brand" maxlength="60">
+<label for="color">品牌强调色</label><div class="row"><input id="color" type="color"><code id="hex"></code></div>
+<label for="safe">安全边距（短边的 %）</label><input id="safe" type="number" min="3" max="12" step=".5">
+<div class="row"><div><label for="minFont">最小标题字号</label><input id="minFont" type="number" min="24" max="140"></div><div><label for="maxFont">最大标题字号</label><input id="maxFont" type="number" min="24" max="140"></div></div>
+<label for="maxLines">标题最多行数</label><input id="maxLines" type="number" min="1" max="6">
+<p class="hint">字号以 1080px 短边为基准。固定 Arial 字体；根据目标尺寸同比例换算。</p>
+<label for="logoFile">Logo 素材</label><input id="logoFile" type="file" accept="image/png,image/jpeg,image/webp"><p id="logoName" class="hint"></p>
+<label for="productFile">产品素材</label><input id="productFile" type="file" accept="image/png,image/jpeg,image/webp"><p id="productName" class="hint"></p>
+<p class="hint">支持 PNG / JPG / WebP，每张不超过 4MB；透明 PNG 更适合。未上传时使用虚构 APEX 演示图。</p>
+<button id="clearAssets" class="full">恢复演示素材</button><button id="rulesExport" class="full">导出 DESIGN.md</button>
+</section>
+<section class="panel"><h2>验证实际价值</h2><p class="hint">填入实际制作时间，包含规则准备、审核和返工；不使用生成耗时代替劳动时间。</p>
+<label for="baseline">纯人工总时间 / 分钟</label><input id="baseline" type="number" min="0" step=".1" placeholder="例如 45">
+<label for="assisted">辅助后总时间 / 分钟</label><input id="assisted" type="number" min="0" step=".1" placeholder="例如 30"><p id="benchmark" class="hint">尚未填写对照数据。</p></section>
+</aside>
+<main>
+<div class="metrics"><div class="metric"><b id="total">0</b><span>输出版本</span></div><div class="metric"><b id="failures">0</b><span>需要修复</span></div><div class="metric"><b id="pending">0</b><span>等待视觉复核</span></div></div>
+<section class="panel" id="copyPanel"><h2><span class="num">02</span>任务与文案</h2><div class="toolbar"><select id="language" aria-label="编辑语言"><option value="en">English · 英文</option><option value="de">Deutsch · 德文</option><option value="fr">Français · 法文</option></select><select id="format" aria-label="目标尺寸"><option value="feed">Feed · 1080 × 1350</option><option value="story">Story · 1080 × 1920</option><option value="wide">Banner · 1920 × 1080</option></select></div>
+<label for="headline">标题</label><textarea id="headline" maxlength="1800"></textarea>
+<label for="body">正文</label><textarea id="body" maxlength="1000"></textarea>
+<div class="row"><div><label for="cta">CTA</label><input id="cta" maxlength="180"></div><div><label for="price">价格 / 固定信息</label><input id="price" maxlength="100"></div></div>
+<div class="toolbar" style="margin-top:16px"><label style="font-weight:normal;margin:0"><input id="allSizes" type="checkbox"> 同时生成三种尺寸</label><span class="spacer"></span><button id="generate" class="lime">生成三语言版本 ↗</button></div><p class="hint">使用你已确认的译文，不自动翻译或改写。当前使用确定性排版，尚未连接 AI 模型。</p></section>
+<div class="toolbar"><h2 style="margin:0">适配结果</h2><span class="spacer"></span><label style="margin:0;font-weight:normal"><input id="guides" type="checkbox" checked> 显示安全区</label></div><div id="cards" class="cards"></div>
+<section class="panel" style="margin-top:18px"><div class="toolbar"><h2 id="selectionTitle" style="margin:0">当前版本</h2><span class="spacer"></span><button id="svgExport">导出 SVG</button><button id="pngExport">导出 PNG</button></div><div id="stage" class="stage"></div><p class="hint">SVG 保留文字与独立素材对象。PNG 是合成图。图中演示产品不代表真实商品。</p></section>
+</main>
+<aside class="inspector">
+<section class="panel"><h2><span class="num">03</span>检查与审核</h2><div id="checks"></div><button id="approve" class="primary full">确认当前版视觉审核通过</button><button id="reportExport" class="full">导出全批次检查报告</button>
+<details><summary>验证检查器</summary><p class="hint">故障只影响当前输出，重新生成即可恢复。</p><select id="fault" aria-label="注入故障"><option value="ratio">产品拉伸</option><option value="color">标题错色</option><option value="bounds">Logo 越界</option><option value="price">价格被修改</option></select><button id="inject" class="full">注入故障并检查</button><button id="selfTest" class="full">运行内置自测</button><div id="testResults" class="hint"></div></details>
+</section>
+<section class="panel"><h2>人工修正 → 复用</h2><p class="hint">调整当前标题。所有值均以 1080px 短边为基准。</p>
+<div class="row"><div><label for="dx">水平位移</label><input id="dx" type="number" min="-600" max="600" value="0"></div><div><label for="dy">垂直位移</label><input id="dy" type="number" min="-600" max="600" value="0"></div></div>
+<label for="fontOverride">标题字号（留空则自动）</label><input id="fontOverride" type="number" min="24" max="140">
+<label for="scope">这次修正适用于</label><select id="scope"><option value="once">当前语言与尺寸</option><option value="template">此尺寸模板的全部语言</option><option value="brand">品牌规则：标题字号上限</option></select>
+<label for="reason">修改原因</label><textarea id="reason" maxlength="300" placeholder="例如：德语标题需要更大的呼吸空间"></textarea><button id="apply" class="primary full">保存修正并重新生成</button><p class="hint">品牌级只更新字号上限，位移只保存到当前版。修正记录不会被自动提升成品牌规则。</p>
+<details open><summary>最近修改记录</summary><div id="logs"></div></details></section>
+</aside>
+</div><div id="toast" role="status" aria-live="polite"></div>
+<script>
+{{ENGINE}}
+{{APP}}
+</script>
+</body>
+</html>

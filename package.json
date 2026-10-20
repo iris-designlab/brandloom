@@ -1,0 +1,15 @@
+{
+  "name": "brandloom",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Offline brand-rule driven creative adaptation prototype",
+  "license": "MIT",
+  "scripts": {
+    "build": "node tools/build.cjs",
+    "test": "node --test tests/engine.test.cjs",
+    "start": "node tools/serve.cjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

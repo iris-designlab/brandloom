@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "kit": {
+    "name": "APEX Campaign",
+    "color": "#DFFF00",
+    "safe": 0.055,
+    "minFont": 42,
+    "maxFont": 92,
+    "maxLines": 3,
+    "revision": 1
+  },
+  "copies": {
+    "en": {
+      "headline": "GO BEYOND\nTHE ORDINARY.",
+      "body": "Every journey deserves a different perspective.",
+      "cta": "Discover more",
+      "price": "€399"
+    },
+    "de": {
+      "headline": "MEHR ALS\nNUR EIN ABENTEUER.",
+      "body": "Jede Reise verdient eine neue Perspektive.",
+      "cta": "Jetzt entdecken",
+      "price": "€399"
+    },
+    "fr": {
+      "headline": "CHANGEZ\nDE PERSPECTIVE.",
+      "body": "Chaque aventure mérite un nouveau regard.",
+      "cta": "Découvrir",
+      "price": "399 €"
+    }
+  },
+  "assets": {},
+  "local": {},
+  "templates": {},
+  "logs": [],
+  "allSizes": false,
+  "format": "feed",
+  "benchmark": {
+    "baseline": "",
+    "assisted": ""
+  }
+}
